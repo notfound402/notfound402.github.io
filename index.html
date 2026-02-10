@@ -602,16 +602,19 @@
       return j.data || [];
     }
 
-    async function apiReserve(numero, nombre, telefono) {
-      const r = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: TOKEN, numero, nombre, telefono })
-      });
-      const j = await r.json();
-      if (!j.ok) throw new Error(j.error || "POST failed");
-      return j;
-    }
+  async function apiReserve(numero, nombre, telefono) {
+  const payload = JSON.stringify({ token: TOKEN, numero, nombre, telefono });
+
+  const r = await fetch(API_URL, {
+    method: "POST",
+    body: payload,               // <- string
+    // NO headers -> el navegador lo manda como text/plain;charset=UTF-8
+  });
+
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || "POST failed");
+  return j;
+}
 
     async function cargarEstadoDesdeSheet({ silent=false } = {}) {
       if (refreshing) return;
